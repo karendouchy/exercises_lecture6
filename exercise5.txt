@@ -105,29 +105,23 @@ OF => SELECT * FROM booking WHERE YEAR(dateto)-YEAR(datefrom) >= 1 OR (MONTH(dat
 +--------------+
 
 11) List the rooms that are currently unoccupied at the The Tower Hotel.
-   => select b.roomno from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno where curdate() not between datefrom and dateto;
+   => select b.roomno from booking b JOIN guest g ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno where hotelname like "The Tower Hotel" and  curdate() not between datefrom and datefrom and dateto;
 +--------+
 | roomno |
 +--------+
-|   1101 |
-|    801 |
-|   1001 |
-|   1001 |
 |    501 |
 |    701 |
 |    601 |
 |    501 |
-|   1001 |
-|   1101 |
 +--------+
 
 
 12) What is the lost income from unoccupied rooms at the The Tower Hotel?
-   => select sum(price) as lost_income from booking b JOIN guest g ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r on r.roomno=b.roomno where curdate() not between datefrom and dateto;
+   => select sum(price) as lost_income from booking b JOIN guest g ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r on r.roomno=b.roomno where hotelname like "The Tower Hotel" and curdate() not between datefrom and datefrom and dateto;
 +-------------+
 | lost_income |
 +-------------+
-|      846.95 |
+|      121.80 |
 +-------------+
 
 
