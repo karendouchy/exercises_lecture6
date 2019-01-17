@@ -1,0 +1,16 @@
+$ mkdir exercise_lecture6
+
+$ cd exercise_lecture6
+$ git init
+
+$ touch README.md
+$ git add README.md
+$ git status
+$ git commit -m “first”
+
+naar https://github.com/ 
+Bovenaan rechts op plusje -> new repository -> exercises_lecture6
+
+$ git remote add origin https://github.com/karendouchy/exercises_lecture6.git
+$ git push -u origin master
+
