@@ -1,0 +1,181 @@
+1) List the names and addresses of all guests in London, alphabetically ordered by  name.
+   => select guestname, guestaddress from guest where guestaddress like "%Ĺondon%" order by guestname;
++--------------+--------------------+
+| guestname    | guestaddress       |
++--------------+--------------------+
+| John Kay     | 56 High St, London |
+| Mike Ritchie | 18 Tain St, London |
++--------------+--------------------+
+
+2) List all double or family rooms with a price below £40.00 per night, cheapest first.
+   => select * from room where type like "double" and price<40 or type like "family" and price<40 order by price asc;
++--------+---------+--------+-------+
+| roomno | hotelno | type   | price |
++--------+---------+--------+-------+
+|    801 | ch02    | double | 15.00 |
+|    601 | fb01    | double | 29.00 |
+|   1001 | dc01    | double | 30.00 |
+|   1101 | ch01    | family | 59.99 |
+|   1101 | fb02    | double | 86.00 |
++--------+---------+--------+-------+
+   
+
+3) List the bookings for which no dateto has been specified.
+   => select * from booking where dateto is null;
++---------+---------+------------+--------+--------+
+| hotelno | guestno | datefrom   | dateto | roomno |
++---------+---------+------------+--------+--------+
+| ch01    |   10006 | 2019-04-21 | NULL   |   1101 |
+| dc01    |   10003 | 2019-05-20 | NULL   |   1001 |
+| fb01    |   10001 | 2019-05-01 | NULL   |    701 |
++---------+---------+------------+--------+--------+
+
+
+4) What is the average price of a room?
+   => select avg(price) as average_price from room;
++---------------+
+| average_price |
++---------------+
+|     35.748333 |
++---------------+
+
+5) What is the total revenue per night from all double rooms?
+   => select sum(price) as total_revenue from room where type like "double";
++---------------+
+| total_revenue |
++---------------+
+|        160.00 |
++---------------+
+
+ 
+6) How many different guests have made bookings for August?
+   => SELECT count(*) FROM booking WHERE YEAR(dateto)-YEAR(datefrom) >= 1 OR MONTH(dateto) = 8 OR MONTH(datefrom) = 8 OR (MONTH(datefrom) < 8 AND MONTH(dateto) > 8);
++----------+
+| count(*) |
++----------+
+|        2 |
++----------+
+
+
+OF => SELECT * FROM booking WHERE YEAR(dateto)-YEAR(datefrom) >= 1 OR (MONTH(datefrom) <= 8 AND MONTH(dateto) >= 8);
++----------+
+| count(*) |
++----------+
+|        2 |
++----------+
+
+
+!! BEIDE ZIJN JUIST MAAR DE TWEEDE IS BETER AANGEZIEN WE OP DEZE MANIER DE NULL VALUES OVERSLAAN -> deze zijn niet geboekt
+
+7) List the price and type of all rooms at the The Tower Hotel.
+   => select price, type, roomno from room r JOIN hotel h ON h.hotelno=r.hotelno where hotelname like "The Tower Hotel";
++-------+--------+--------+
+| price | type   | roomno |
++-------+--------+--------+
+| 19.00 | single |    501 |
+| 29.00 | double |    601 |
+| 39.00 | family |    701 |
++-------+--------+--------+
+
+
+8) List all guests currently staying at the The Tower Hotel.
+   => select g.guestno, guestname from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno where curdate() > datefrom and curdate() < dateto;
++---------+--------------+
+| guestno | guestname    |
++---------+--------------+
+|   10002 | Mike Ritchie |
++---------+--------------+
+
+   
+9) List the details of all rooms at the The Tower Hotel, including the name of the guest  staying in the room, if the room is occupied.
+   => select r.roomno, r.type, r.price, g.guestno, g.guestname from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r ON r.roomno=b.roomno where h.hotelname like "The Tower Hotel" and  curdate() > datefrom and curdate() < dateto;
++--------+--------+-------+---------+--------------+
+| roomno | type   | price | guestno | guestname    |
++--------+--------+-------+---------+--------------+
+|    601 | double | 29.00 |   10002 | Mike Ritchie |
++--------+--------+-------+---------+--------------+
+
+
+10) What is the total income from bookings for the The Tower Hotel today?
+   => select sum(price) as total_income from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r ON r.roomno=b.roomno where h.hotelname like "The Tower Hotel" and  curdate() > datefrom and curdate() < dateto;
++--------------+
+| total_income |
++--------------+
+|        29.00 |
++--------------+
+
+11) List the rooms that are currently unoccupied at the The Tower Hotel.
+   => select b.roomno from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno where curdate() not between datefrom and dateto;
++--------+
+| roomno |
++--------+
+|   1101 |
+|    801 |
+|   1001 |
+|   1001 |
+|    501 |
+|    701 |
+|    601 |
+|    501 |
+|   1001 |
+|   1101 |
++--------+
+
+
+12) What is the lost income from unoccupied rooms at the The Tower Hotel?
+   => select sum(price) as lost_income from booking b JOIN guest g ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r on r.roomno=b.roomno where curdate() not between datefrom and dateto;
++-------------+
+| lost_income |
++-------------+
+|      846.95 |
++-------------+
+
+
+13) List the number of rooms in each hotel in London.
+=> select hotelname, count(*) as number_rooms from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno group by hotelname ;
++-----------------+--------------+
+| hotelname       | number_rooms |
++-----------------+--------------+
+| Omni Shoreham   |            1 |
+| Phoenix Park    |            1 |
+| Latham          |            2 |
+| The Tower Hotel |            5 |
+| Watergate       |            2 |
++-----------------+--------------+
+
+
+14) What is the most commonly booked room type for each hotel in London?
+   => select hotelname, max(r.type) as most_booked from guest g JOIN booking b ON b.guestno=g.guestno JOIN hotel h ON h.hotelno=b.hotelno JOIN room r ON r.roomno=b.roomno group by hotelname ;
++-----------------+-------------+
+| hotelname       | most_booked |
++-----------------+-------------+
+| Omni Shoreham   | family      |
+| Phoenix Park    | double      |
+| Latham          | single      |
+| The Tower Hotel | single      |
+| Watergate       | single      |
++-----------------+-------------+
+
+
+15) Update the price of all rooms by 5%.
+   => update room set price = price + (price/100*5);
+   => select * from room;
++--------+---------+--------+-------+
+| roomno | hotelno | type   | price |
++--------+---------+--------+-------+
+|    501 | fb01    | single | 19.95 |
+|    601 | fb01    | double | 30.45 |
+|    701 | ch02    | single | 10.50 |
+|    701 | fb01    | family | 40.95 |
+|    801 | ch02    | double | 15.75 |
+|    901 | dc01    | single | 18.90 |
+|   1001 | ch01    | single | 31.49 |
+|   1001 | dc01    | double | 31.50 |
+|   1001 | fb02    | single | 60.90 |
+|   1101 | ch01    | family | 62.99 |
+|   1101 | dc01    | family | 36.75 |
+|   1101 | fb02    | double | 90.30 |
++--------+---------+--------+-------+
+
+
+
