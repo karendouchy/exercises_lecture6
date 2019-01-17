@@ -1,0 +1,23 @@
+UNF
+
+      DB(staffNo, dentistName, patientNo, patientName, appointment, surgeryNo)
+
+1NF (appointment is a repeating group because it has different types of data, else every row is unique)
+
+      DB(staffNo, dentistName, patientNo, patientName, appointment_date, appointment_time, surgeryNo)
+
+2NF (SurgeryNo depends on date and staffNo, dentistName depends on staffNo, keys: staffNo, appointment_date, appointment_time)
+
+      appointment(staffNo, patientNo, patientName, appointment_date, appointment_time)
+      surgery(staffNo, appointment_date, surgeryNo)
+      dentist(staffNo,dentistName)
+
+3NF (patientName depends on patientNo, keys: staffNo, appointment_date, appointment_time -- patientNo -- staffNo, apppointment_date -- staffNo)
+
+      appointment(staffNo, patientNo, appointment_date, appointment_time)
+      patient(patientNo, patientName)
+      surgery(staffNo, appointment_date, surgeryNo)
+      dentist(staffNo,dentistName)
+
+BCNF = 3NF
+
