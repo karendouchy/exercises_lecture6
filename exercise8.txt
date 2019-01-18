@@ -38,8 +38,8 @@ TGTAATTGCATATACTCATACTTGCCATATATTGCCTCCCCAAACAAAAGAGGGCCACCA
 AGCATCATGCCTTCTTTGTGG
 
    => curl 'http://rest.ensembl.org/sequence/region/human/13:32889000..32891000:1?mask=soft;content-type=text/x-fasta'
+   => de kleine letters zijn de repeat regions (4 dus)
 >chromosome:GRCh38:13:32889000:32891000:1
-
 ttatgcttctgataaatttgggttatagtttgtttaaaatcagctggaagtttttaatta
 ttgtactcaaaggatgacacaccaaaatcttcagcttttgaagtttttgatgaattgtaa
 ttattgagagaaaagcttgcctgggaaggcattagaattcacctctataaaaggcaagag
@@ -76,6 +76,7 @@ tgtaattgcatatactcatacttgccatatattgcctccccaaacaaaagagggccacca
 agcatcatgccttctttgtgg
 
    => [guest@localhost ~]$ curl 'http://rest.ensembl.org/sequence/region/human/13:32889000..32891000:1?mask=hard;content-type=text/x-fasta'
+   => de N gebieden zijn de repeat regions (4 dus)
 >chromosome:GRCh38:13:32889000:32891000:1
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
