@@ -1,0 +1,131 @@
+1)	How many beers are there in the database?
+   => db.beers.count() 
+
+1691
+
+2) Return the first 5 beers.
+   => db.beers.find().limit(5)
+
+{ "_id" : ObjectId("5c1bad54b03354fde64ad81c"), "beer" : "400", "brewery" : "'t Hofbrouwerijke voor Brouwerij Montaigu", "type" : [ "blond" ], "alcoholpercentage" : 5.6 }
+{ "_id" : ObjectId("5c1bad54b03354fde64ad81d"), "beer" : "VI Wheat", "brewery" : "Brasserie de Jandrain-Jandrenouille", "type" : [ "hoge gisting", "tarwebier" ], "alcoholpercentage" : 6 }
+{ "_id" : ObjectId("5c1bad54b03354fde64ad81e"), "beer" : "Aardmonnik", "brewery" : "De Struise Brouwers", "type" : [ "oud bruin" ], "alcoholpercentage" : 8 }
+{ "_id" : ObjectId("5c1bad54b03354fde64ad81f"), "beer" : "Aarschotse Bruine", "brewery" : "Stadsbrouwerij Aarschot", "type" : [ "bruin" ], "alcoholpercentage" : 6 }
+{ "_id" : ObjectId("5c1bad54b03354fde64ad820"), "beer" : "Abbay d'Aulne Blonde des Pères 6", "brewery" : "Brasserie Val de Sambre", "type" : [ "abdijbier", "blond" ], "alcoholpercentage" : 6 }
+
+
+3) How many beers in the database are of type “blond troebel”?
+   => db.beers.count({type:"blond troebel"}) 
+
+1
+
+4) Of these “blond troebel” beers, only return the name.
+   => db.beers.find({type:"blond troebel"},{beer:1})
+
+{ "_id" : ObjectId("5c1bad54b03354fde64ad883"), "beer" : "L'Autruche Biere des Gilles" }
+
+5) How many beers have a percentage alcohol of more than 8 degrees?
+   => db.beers.count({alcoholpercentage: {$gt: 8}}) 
+
+399
+
+6) How many beers have low alcohol (“alcoholarm”)?
+   => db.beers.count({type:"alcoholarm"})
+
+6
+
+7) Select those beers that have a percentage of more than 8 degrees, get the average of  these per brewery, and finally take a sample.
+
+?????
+
+8) What is the average alcoholpercentage per brewery?
+   => db.beers.aggregate([{$group:{_id:"$brewery", avgalcohol:{$avg:"$alcoholpercentage"}}}])
+
+{ "_id" : "De Proefbrouwerij voor Geuzestekerij 3 Fonteinen", "avgalcohol" : 7 }
+{ "_id" : "De Proefbrouwerij voor Oude Brouwerij van Zonnegem vzw", "avgalcohol" : 7.1 }
+{ "_id" : "De Proefbrouwerij voor Zonderik Beer Company", "avgalcohol" : 8.25 }
+{ "_id" : "De Proefbrouwerij voor het Zeuntcomité", "avgalcohol" : 7 }
+{ "_id" : "Brouwerij Inter-Pol", "avgalcohol" : 6.05 }
+{ "_id" : "Brouwerij Lupus", "avgalcohol" : 8.299999999999999 }
+{ "_id" : "Brouwerij Sint-Jozef voor brouwerij Kerkom", "avgalcohol" : 10.65 }
+{ "_id" : "Brouwerij Westmalle", "avgalcohol" : 8.25 }
+{ "_id" : "Brouwerij Val-Dieu", "avgalcohol" : 8.375 }
+{ "_id" : "De Proefbrouwerij in opdracht van De Kale Ridders", "avgalcohol" : 7.125 }
+{ "_id" : "De Proefbrouwerij voor Brouwerij The Musketeers", "avgalcohol" : 7.68 }
+{ "_id" : "Brouwerij en stokerij Wilderen", "avgalcohol" : 8.2 }
+{ "_id" : "Microbrouwerij Den Triest", "avgalcohol" : 7.040000000000001 }
+{ "_id" : "De Proefbrouwerij voor Bierfirma Trappieter", "avgalcohol" : 6.5 }
+{ "_id" : "Brouwerij Strubbe voor Bierfirma Den Haene", "avgalcohol" : 6.5 }
+{ "_id" : "De Proefbrouwerij voor Buitenlust", "avgalcohol" : 5.5 }
+{ "_id" : "Kasteelbrouwerij De Dool", "avgalcohol" : 6.1 }
+{ "_id" : "Brasserie La Botteresse de Sur-les-Bois", "avgalcohol" : 8 }
+{ "_id" : "Brouwers Verzet in Brouwerij De Ranke", "avgalcohol" : 4.9 }
+{ "_id" : "Brasserie des Fagnes", "avgalcohol" : 6.6000000000000005 }
+Type "it" for more
+
+
+9) Which breweries have an average alcohol percentage higher than 10 degrees? Return  these in descending order of alcoholpercentage.
+   => db.beers.aggregate([{$group:{_id:"$brewery", avgalcohol:{$avg:"$alcoholpercentage"}}},{$match:{avgalcohol:{$gt:10}}},{$sort:{avgalcohol:-1}}])
+
+{ "_id" : "Staminee De Garre (Brouwerij Van Steenberge)", "avgalcohol" : 11.5 }
+{ "_id" : "Brouwerij Sint-Jozef voor brouwerij Kerkom", "avgalcohol" : 10.65 }
+{ "_id" : "Brouwerij Dubuisson", "avgalcohol" : 10.5 }
+{ "_id" : "De Struise Brouwers bij Brouwerij Deca", "avgalcohol" : 10.204545454545455 }
+
+
+10) What is the average alcoholpercentage per type of beer? Sort by alcoholpercentage.
+   => db.beers.aggregate([{$group:{_id:"$type", avgalcohol:{$avg:"$alcoholpercentage"}}},{$sort:{avgalcohol:-1}}])
+
+{ "_id" : [ "Russian Imperial Stout", "Eisbockmethode" ], "avgalcohol" : 26 }
+{ "_id" : [ "quadrupel", "oak aged" ], "avgalcohol" : 15 }
+{ "_id" : [ "Belgian Royal Stout" ], "avgalcohol" : 13 }
+{ "_id" : [ "kerstbier", "tripel" ], "avgalcohol" : 13 }
+{ "_id" : [ "Russian Imperial Stout" ], "avgalcohol" : 12.75 }
+{ "_id" : [ "amberkleurig speciaalbier", "hoge gisting" ], "avgalcohol" : 11.5 }
+{ "_id" : [ "speciaalbier", "blond" ], "avgalcohol" : 11.5 }
+{ "_id" : [ "robijnrood speciaalbier" ], "avgalcohol" : 11 }
+{ "_id" : [ "hoge gisting", "speciaalbier" ], "avgalcohol" : 11 }
+{ "_id" : [ "oak aged" ], "avgalcohol" : 10.5 }
+{ "_id" : [ "amber", "tripel" ], "avgalcohol" : 10.4 }
+{ "_id" : [ "tripel", "amber" ], "avgalcohol" : 10.05 }
+{ "_id" : [ "hoge gisting", "goud" ], "avgalcohol" : 10 }
+{ "_id" : [ "hoge gisting", "single hop" ], "avgalcohol" : 10 }
+{ "_id" : [ "donker seizoensbier" ], "avgalcohol" : 10 }
+{ "_id" : [ "hoge gisting", "Belgian strong pale ale" ], "avgalcohol" : 10 }
+{ "_id" : [ "Belgo/american ale" ], "avgalcohol" : 10 }
+{ "_id" : [ "donkere tripel" ], "avgalcohol" : 10 }
+{ "_id" : [ "biologisch", "roodbruin" ], "avgalcohol" : 10 }
+{ "_id" : [ "troebel blond", "kerstbier" ], "avgalcohol" : 10 }
+Type "it" for more
+
+
+11) What is the range (max - min) of alcoholpercentage for beers per brewery that brews  more than 1 beer?
+   => db.beers.aggregate([
+{$group:{_id:"$brewery", count:{$sum:1}, max_alc:{$max:"$alcoholpercentage"},min_alc:{$min:"$alcoholpercentage"}}},
+{$match:{count:{$gt:1}}},
+{$sort:{count:-1}},
+{$addFields:{range:{$subtract:["$max_alc","$min_alc"]}}}
+])
+
+{ "_id" : "Brouwerij Huyghe", "count" : 43, "max_alc" : 10, "min_alc" : 3, "range" : 7 }
+{ "_id" : "Brouwerij Van Honsebrouck", "count" : 36, "max_alc" : 11, "min_alc" : 0, "range" : 11 }
+{ "_id" : "Brouwerij Van Steenberge", "count" : 32, "max_alc" : 11.5, "min_alc" : 0, "range" : 11.5 }
+{ "_id" : "Brouwerij De Regenboog", "count" : 31, "max_alc" : 12, "min_alc" : 2.5, "range" : 9.5 }
+{ "_id" : "Brouwerij Alvinne", "count" : 30, "max_alc" : 15, "min_alc" : 3.8, "range" : 11.2 }
+{ "_id" : "Brouwerij Haacht", "count" : 27, "max_alc" : 8.5, "min_alc" : 0.4, "range" : 8.1 }
+{ "_id" : "Brouwerij Bavik", "count" : 24, "max_alc" : 8, "min_alc" : 0.5, "range" : 7.5 }
+{ "_id" : "De Struise Brouwers bij Brouwerij Deca", "count" : 22, "max_alc" : 26, "min_alc" : 5, "range" : 21 }
+{ "_id" : "Brouwerij Van Eecke", "count" : 21, "max_alc" : 10, "min_alc" : 5, "range" : 5 }
+{ "_id" : "Brouwerij Strubbe", "count" : 21, "max_alc" : 9.2, "min_alc" : 0.3, "range" : 8.899999999999999 }
+{ "_id" : "Brouwerij Het Sas", "count" : 20, "max_alc" : 7.5, "min_alc" : 1.8, "range" : 5.7 }
+{ "_id" : "Brasserie Du Bocq", "count" : 20, "max_alc" : 8.7, "min_alc" : 0, "range" : 8.7 }
+{ "_id" : "Brasserie d'Ecaussinnes", "count" : 18, "max_alc" : 10, "min_alc" : 0, "range" : 10 }
+{ "_id" : "Brouwerij Lefebvre", "count" : 17, "max_alc" : 8.3, "min_alc" : 3.5, "range" : 4.800000000000001 }
+{ "_id" : "Brouwerij Het Anker", "count" : 17, "max_alc" : 11, "min_alc" : 3.5, "range" : 7.5 }
+{ "_id" : "Brasserie de Silly", "count" : 16, "max_alc" : 9.5, "min_alc" : 5, "range" : 4.5 }
+{ "_id" : "Alken-Maes", "count" : 15, "max_alc" : 8, "min_alc" : 4, "range" : 4 }
+{ "_id" : "Brouwerij Palm", "count" : 15, "max_alc" : 7.5, "min_alc" : 0.25, "range" : 7.25 }
+{ "_id" : "'t Hofbrouwerijke", "count" : 15, "max_alc" : 11, "min_alc" : 5.5, "range" : 5.5 }
+{ "_id" : "De Proefbrouwerij", "count" : 15, "max_alc" : 9.5, "min_alc" : 0, "range" : 9.5 }
+Type "it" for more
+
+
