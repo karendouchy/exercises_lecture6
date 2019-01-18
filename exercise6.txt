@@ -1,0 +1,259 @@
+OVERVIEW TABLES:
+select * from course limit 5;
++----------+--------------------------------------+----------+
+| CourseNo | crsDesc                              | CrsUnits |
++----------+--------------------------------------+----------+
+| FIN300   | FUNDAMENTALS OF FINANCE              |        4 |
+| FIN450   | PRINCIPLES OF INVESTMENTS            |        4 |
+| FIN480   | CORPORATE FINANCE                    |        4 |
+| IS320    | FUNDAMENTALS OF BUSINESS PROGRAMMING |        4 |
+| IS460    | SYSTEMS ANALYSIS                     |        4 |
++----------+--------------------------------------+----------+
+
+select * from enrollment limit 5;
++---------+-------------+----------+
+| OfferNo | StdSSN      | EnrGrade |
++---------+-------------+----------+
+|    1234 | 123-45-6789 |     3.30 |
+|    1234 | 234-56-7890 |     3.50 |
+|    1234 | 345-67-8901 |     3.20 |
+|    1234 | 456-78-9012 |     3.10 |
+|    1234 | 567-89-0123 |     3.80 |
++---------+-------------+----------+
+
+select * from faculty limit 5;
++-------------+--------------+-------------+----------+----------+------------+---------+-------------+-----------+---------------+---------+
+| FacSSN      | FacFirstName | FacLastName | FacCity  | FacState | FacZipCode | FacRank | FacHireDate | FacSalary | FacSupervisor | FacDept |
++-------------+--------------+-------------+----------+----------+------------+---------+-------------+-----------+---------------+---------+
+| 098-76-5432 | LEONARD      | VINCE       | SEATTLE  | WA       | 98111-9921 | ASST    | 1995-04-10  |  35000.00 | 654-32-1098   | MS      |
+| 543-21-0987 | VICTORIA     | EMMANUEL    | BOTHELL  | WA       | 98011-2242 | PROF    | 1996-04-15  | 120000.00 |               | MS      |
+| 654-32-1098 | LEONARD      | FIBON       | SEATTLE  | WA       | 98121-0094 | ASSC    | 1994-05-01  |  70000.00 | 543-21-0987   | MS      |
+| 765-43-2109 | NICKI        | MACON       | BELLEVUE | WA       | 98015-9945 | PROF    | 1997-04-11  |  65000.00 |               | FIN     |
+| 876-54-3210 | CRISTOPHER   | COLAN       | SEATTLE  | WA       | 98114-1332 | ASST    | 1999-03-01  |  40000.00 | 654-32-1098   | MS      |
++-------------+--------------+-------------+----------+----------+------------+---------+-------------+-----------+---------------+---------+
+
+select * from offering limit 5;
++---------+----------+---------+---------+-------------+----------+-------------+---------+
+| OfferNo | CourseNo | OffTerm | OffYear | OffLocation | OffTime  | FacSSN      | OffDays |
++---------+----------+---------+---------+-------------+----------+-------------+---------+
+|    1111 | IS320    | SUMMER  |    2006 | BLM302      | 10:30:00 |             | MW      |
+|    1234 | IS320    | FALL    |    2005 | BLM302      | 10:30:00 | 098-76-5432 | MW      |
+|    2222 | IS460    | SUMMER  |    2005 | BLM412      | 13:30:00 |             | TTH     |
+|    3333 | IS320    | SPRING  |    2006 | BLM214      | 08:30:00 | 098-76-5432 | MW      |
+|    4321 | IS320    | FALL    |    2005 | BLM214      | 15:30:00 | 098-76-5432 | TTH     |
++---------+----------+---------+---------+-------------+----------+-------------+---------+
+
+select * from student limit 5;
++-------------+--------------+-------------+---------+----------+------------+----------+----------+--------+
+| stdSSN      | stdFirstName | stdLastName | stdCity | stdState | stdZip     | stdMajor | stdClass | stdGPA |
++-------------+--------------+-------------+---------+----------+------------+----------+----------+--------+
+| 123-45-6789 | HOMER        | WELLS       | SEATTLE | WA       | 98121-1111 | IS       | FR       |   3.00 |
+| 124-56-7890 | BOB          | NORBERT     | BOTHELL | WA       | 98011-2121 | FIN      | JR       |   2.70 |
+| 234-56-7890 | CANDY        | KENDALL     | TACOMA  | WA       | 99042-3321 | ACCT     | JR       |   3.50 |
+| 345-67-8901 | WALLY        | KENDALL     | SEATTLE | WA       | 98123-1141 | IS       | SR       |   2.80 |
+| 456-78-9012 | JOE          | ESTRADA     | SEATTLE | WA       | 98121-2333 | FIN      | SR       |   3.20 |
++-------------+--------------+-------------+---------+----------+------------+----------+----------+--------+
+
+
+
+
+
+
+
+1) Retrieve the name, city and grade point average (GPA) of students, greater than or  equal to 3.7
+
+SELECT concat(stdFirstName, " ", stdLastName) as Student_name, stdCity, stdGPA FROM student WHERE stdGPA >= 3.70;
++------------------+---------+--------+
+| Student_name     | stdCity | stdGPA |
++------------------+---------+--------+
+| CRISTOPHER COLAN | SEATTLE |   4.00 |
+| WILLIAM PILGRIM  | BOTHELL |   3.80 |
++------------------+---------+--------+
+
+
+2) List the name and hiring date of faculty hired in 1999 or 2000
+
+SELECT concat(FacFirstName, " ", FacLastName) as FacName, FacHireDate FROM faculty WHERE YEAR(FacHireDate) = 1999 OR YEAR(FacHireDate) = 2000; 
++------------------+-------------+
+| FacName          | FacHireDate |
++------------------+-------------+
+| CRISTOPHER COLAN | 1999-03-01  |
+| JULIA MILLS      | 2000-03-15  |
++------------------+-------------+
+
+
+3) List the offer number, course number and faculty Social Security number for course offerings scheduled in fall 2005 or winter 2006
+
+SELECT OfferNo, CourseNo, FacSSN, OffTerm, OffYear FROM offering WHERE (OffTerm = "FALL" AND OffYear = 2005) OR (OffTerm = "WINTER" AND OffYear = 2006);
++---------+----------+-------------+---------+---------+
+| OfferNo | CourseNo | FacSSN      | OffTerm | OffYear |
++---------+----------+-------------+---------+---------+
+|    1234 | IS320    | 098-76-5432 | FALL    |    2005 |
+|    4321 | IS320    | 098-76-5432 | FALL    |    2005 |
+|    4444 | IS320    | 543-21-0987 | WINTER  |    2006 |
+|    5555 | FIN300   | 765-43-2109 | WINTER  |    2006 |
+|    5678 | IS480    | 987-65-4321 | WINTER  |    2006 |
+|    6666 | FIN450   | 987-65-4321 | WINTER  |    2006 |
++---------+----------+-------------+---------+---------+
+
+
+4) List the offering number, course number, days and time of offerings containing the words 'database' or 'programming' in the course description and taught in spring 2006.
+
+SELECT OfferNo, course.CourseNo, OffTime, OffDays, OffTerm, OffYear, crsDesc FROM offering JOIN course ON course.CourseNo = offering.CourseNo WHERE (OffTerm = "SPRING" AND OffYear = 2006) AND (crsDesc like "%DATABASE%" OR crsDesc like "%PROGRAMMING%");
++---------+----------+----------+---------+---------+---------+--------------------------------------+
+| OfferNo | CourseNo | OffTime  | OffDays | OffTerm | OffYear | crsDesc                              |
++---------+----------+----------+---------+---------+---------+--------------------------------------+
+|    3333 | IS320    | 08:30:00 | MW      | SPRING  |    2006 | FUNDAMENTALS OF BUSINESS PROGRAMMING |
+|    5679 | IS480    | 15:30:00 | TTH     | SPRING  |    2006 | FUNDAMENTALS OF DATABASE MANAGEMENT  |
++---------+----------+----------+---------+---------+---------+--------------------------------------+
+
+5) List the offer number, course number and name of the instructor of IS course offerings scheduled in fall 2005 taught by assistant professors
+
+SELECT offering.OfferNo, CourseNo, concat(FacFirstName, " ", FacLastName) as NameInstructor, OffTerm, OffYear, FacRank, stdMajor FROM offering JOIN faculty ON offering.FacSSN = faculty.FacSSN JOIN enrollment ON enrollment.OfferNo = offering.OfferNo JOIN student ON student.stdSSN = enrollment.StdSSN WHERE (OffTerm = "FALL" AND OffYear = 2005) AND FacRank = "ASST" AND stdMajor = "IS"; 
++---------+----------+----------------+---------+---------+---------+----------+
+| OfferNo | CourseNo | NameInstructor | OffTerm | OffYear | FacRank | stdMajor |
++---------+----------+----------------+---------+---------+---------+----------+
+|    1234 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    1234 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    1234 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    4321 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    4321 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    4321 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
+|    4321 | IS320    | LEONARD VINCE  | FALL    |    2005 | ASST    | IS       |
++---------+----------+----------------+---------+---------+---------+----------+
+
+
+6) Summarize the averageGPA of students by major.
+
+SELECT stdMajor, AVG(stdGPA) as averageGPA FROM student GROUP BY stdMajor;
++----------+------------+
+| stdMajor | averageGPA |
++----------+------------+
+| IS       |   3.233333 |
+| FIN      |   2.800000 |
+| ACCT     |   3.400000 |
++----------+------------+
+
+
+7) Summarize the number of offerings and unique courses by year.
+
+SELECT COUNT(DISTINCT(CourseNo)), SUM(OfferNo), OffYear FROM offering GROUP BY OffYear;
++---------------------------+--------------+---------+
+| COUNT(DISTINCT(CourseNo)) | SUM(OfferNo) | OffYear |
++---------------------------+--------------+---------+
+|                         2 |         7777 |    2005 |
+|                         6 |        59007 |    2006 |
++---------------------------+--------------+---------+
+
+
+8) Summarize the average GPA of upper-division (junior or senior) students by major.  Only list the major with average GPA greater than 3.1.
+
+SELECT stdMajor, AVG(stdGPA) AS AverageGPA FROM student WHERE stdClass = "JR" OR stdClass = "SR" GROUP BY stdMajor HAVING AVG(stdGPA) > 3.1;
++----------+------------+
+| stdMajor | AverageGPA |
++----------+------------+
+| ACCT     |   3.500000 |
+| IS       |   3.150000 |
++----------+------------+
+
+
+9) Summarize the minimum and maximum GPA of students by major and class.
+
+SELECT stdMajor, stdClass, MIN(stdGPA) AS MinGPA, MAX(stdGPA) AS MaxGPA FROM student GROUP BY stdMajor, stdClass ORDER BY stdMajor ASC;
++----------+----------+--------+--------+
+| stdMajor | stdClass | MinGPA | MaxGPA |
++----------+----------+--------+--------+
+| ACCT     | JR       |   3.50 |   3.50 |
+| ACCT     | SO       |   3.30 |   3.30 |
+| FIN      | JR       |   2.50 |   2.70 |
+| FIN      | SR       |   3.20 |   3.20 |
+| IS       | FR       |   3.00 |   3.00 |
+| IS       | JR       |   3.60 |   3.60 |
+| IS       | SO       |   3.80 |   3.80 |
+| IS       | SR       |   2.20 |   4.00 |
++----------+----------+--------+--------+
+
+
+10) Summarize the number of IS course offering by course description.
+
+SELECT crsDesc, COUNT(*) AS CourseOfferings FROM course JOIN offering ON course.CourseNo = offering.CourseNo WHERE course.CourseNo LIKE "IS%" GROUP BY CrsDesc;
++--------------------------------------+-----------------+
+| crsDesc                              | CourseOfferings |
++--------------------------------------+-----------------+
+| FUNDAMENTALS OF BUSINESS PROGRAMMING |               6 |
+| SYSTEMS ANALYSIS                     |               2 |
+| FUNDAMENTALS OF DATABASE MANAGEMENT  |               2 |
++--------------------------------------+-----------------+
+
+
+11) List the GPA, name, city and state of juniors, lowest GPA first.
+
+SELECT stdGPA, concat(stdFirstName, " ", stdLastName) as studentName, stdCity, stdState, stdClass FROM student WHERE stdClass = "JR" ORDER BY stdGPA ASC;
++--------+-----------------+---------+----------+----------+
+| stdGPA | studentName     | stdCity | stdState | stdClass |
++--------+-----------------+---------+----------+----------+
+|   2.50 | ROBERTO MORALES | SEATTLE | WA       | JR       |
+|   2.70 | BOB NORBERT     | BOTHELL | WA       | JR       |
+|   3.50 | CANDY KENDALL   | TACOMA  | WA       | JR       |
+|   3.60 | MARIAH DODGE    | SEATTLE | WA       | JR       |
++--------+-----------------+---------+----------+----------+
+
+
+12) List the unique city and state combination in the Faculty table.
+
+SELECT DISTINCT FacCity, FacState FROM faculty;
++----------+----------+
+| FacCity  | FacState |
++----------+----------+
+| SEATTLE  | WA       |
+| BOTHELL  | WA       |
+| BELLEVUE | WA       |
++----------+----------+
+
+
+13) List the student name, offering number and grade of students who have a grade >=3.5 in a course offering.
+
+SELECT concat(stdFirstName, " ", stdLastName) AS studentName, OfferNo, EnrGrade FROM student JOIN enrollment ON student.stdSSN = enrollment.StdSSN WHERE EnrGrade >= 3.5;
++-----------------+---------+----------+
+| studentName     | OfferNo | EnrGrade |
++-----------------+---------+----------+
+| CANDY KENDALL   |    1234 |     3.50 |
+| MARIAH DODGE    |    1234 |     3.80 |
+| HOMER WELLS     |    4321 |     3.50 |
+| ROBERTO MORALES |    4321 |     3.50 |
+| BOB NORBERT     |    5679 |     3.70 |
+| ROBERTO MORALES |    5679 |     3.80 |
+| MARIAH DODGE    |    6666 |     3.60 |
+| LUKE BRAZZI     |    7777 |     3.70 |
+| BOB NORBERT     |    9876 |     3.50 |
+| WILLIAM PILGRIM |    9876 |     4.00 |
++-----------------+---------+----------+
+
+
+14) List the names of students (without duplicates) who have grades >= 3.5 in a course offering.
+
+SELECT DISTINCT stdFirstName, stdLastName FROM student JOIN enrollment ON student.stdSSN = enrollment.StdSSN WHERE EnrGrade >= 3.5;
++--------------+-------------+
+| stdFirstName | stdLastName |
++--------------+-------------+
+| CANDY        | KENDALL     |
+| MARIAH       | DODGE       |
+| HOMER        | WELLS       |
+| ROBERTO      | MORALES     |
+| BOB          | NORBERT     |
+| LUKE         | BRAZZI      |
+| WILLIAM      | PILGRIM     |
++--------------+-------------+
+
+
+15) List Bob Norbert's course schedule in spring 2006. For each course, list the offering number, course number, days, location, time and faculty name.
+
+SELECT concat(stdFirstName, " ", stdLastName) AS StudentName, offering.OfferNo, offering.CourseNo, OffDays, OffLocation, OffTime, FacFirstName, FacLastName FROM offering JOIN faculty ON faculty.FacSSN = offering.FacSSN JOIN enrollment ON offering.OfferNo = enrollment.OfferNo JOIN student ON student.stdSSN = enrollment.StdSSN WHERE OffYear = 2006 AND OffTerm = "SPRING" AND stdFirstName = "BOB" AND stdLastName = "NORBERT";
++-------------+---------+----------+---------+-------------+----------+--------------+-------------+
+| StudentName | OfferNo | CourseNo | OffDays | OffLocation | OffTime  | FacFirstName | FacLastName |
++-------------+---------+----------+---------+-------------+----------+--------------+-------------+
+| BOB NORBERT |    5679 | IS480    | TTH     | BLM412      | 15:30:00 | CRISTOPHER   | COLAN       |
+| BOB NORBERT |    9876 | IS460    | TTH     | BLM307      | 13:30:00 | LEONARD      | FIBON       |
++-------------+---------+----------+---------+-------------+----------+--------------+-------------+
+
+
